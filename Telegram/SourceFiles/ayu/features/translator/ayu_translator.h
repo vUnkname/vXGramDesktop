@@ -96,6 +96,9 @@ public:
 
     void resetCache();
 
+    // Context (previous messages) for the next LLM request, consumed once.
+    void setNextLlmContext(const QString &context) { _nextLlmContext = context; }
+
     static TranslateManager *currentInstance();
     static void init();
     static TranslateManager *instance;
@@ -128,6 +131,7 @@ private:
         std::function<void(const MTP::Error &)> fail;
     };
 
+    QString _nextLlmContext;
     mtpRequestId _nextId = 1;
     std::unordered_map<mtpRequestId, Pending> _pending;
 };

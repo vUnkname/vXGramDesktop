@@ -16,6 +16,7 @@
 #include "ui/widgets/buttons.h"
 #include "ui/widgets/continuous_sliders.h"
 #include "ui/widgets/labels.h"
+#include "ui/wrap/slide_wrap.h"
 #include "ui/wrap/vertical_layout.h"
 #include "window/window_session_controller.h"
 
@@ -153,20 +154,33 @@ void AyuSectionBuilder::addChooseButton(ChooseButtonArgs &&args) {
 	auto altIds = std::move(args.altIds);
 	auto keywords = std::move(args.keywords);
 	auto icon = std::move(args.icon);
+	auto gearClick = std::move(args.gearClick);
 	auto resolvedTitle = ResolveTitle(rpl::duplicate(args.title));
 
 	_builder.add([&](const Builder::BuildContext &ctx) {
 		v::match(ctx, [&](const Builder::WidgetContext &wctx) {
-			const auto button = AddChooseButtonWithIconAndRightTextInner(
-				wctx.container,
-				wctx.controller,
-				initialSelection,
-				options,
-				std::move(args.title),
-				std::move(args.boxTitle),
-				icon.icon ? st::settingsButton : st::settingsButtonNoIcon,
-				std::move(icon),
-				setter);
+			const auto button = gearClick
+				? AddChooseButtonWithGear(
+					wctx.container,
+					wctx.controller,
+					initialSelection,
+					options,
+					std::move(args.title),
+					std::move(args.boxTitle),
+					icon.icon ? st::settingsButton : st::settingsButtonNoIcon,
+					std::move(icon),
+					setter,
+					std::move(gearClick))
+				: AddChooseButtonWithIconAndRightTextInner(
+					wctx.container,
+					wctx.controller,
+					initialSelection,
+					options,
+					std::move(args.title),
+					std::move(args.boxTitle),
+					icon.icon ? st::settingsButton : st::settingsButtonNoIcon,
+					std::move(icon),
+					setter);
 			if (!id.isEmpty() && wctx.highlights) {
 				wctx.highlights->push_back({
 					id,
@@ -195,7 +209,16 @@ void AyuSectionBuilder::addSlider(SliderArgs &&args) {
 
 	_builder.add([&](const Builder::BuildContext &ctx) {
 		v::match(ctx, [&](const Builder::WidgetContext &wctx) {
-			const auto container = wctx.container;
+			auto container = wctx.container;
+			if (args.shown) {
+				const auto wrap = container->add(
+					object_ptr<Ui::SlideWrap<Ui::VerticalLayout>>(
+						container,
+						object_ptr<Ui::VerticalLayout>(container)));
+				wrap->toggleOn(std::move(args.shown));
+				wrap->finishAnimating();
+				container = not_null<Ui::VerticalLayout*>(wrap->entity());
+			}
 			const auto titleButton = args.showTitle
 				? container->add(
 					object_ptr<Button>(container,

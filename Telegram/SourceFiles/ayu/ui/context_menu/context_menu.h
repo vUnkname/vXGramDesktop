@@ -21,6 +21,9 @@ namespace AyuUi {
 
 bool needToShowItem(ContextMenuVisibility state);
 
+// vXGram: visibility of the "Translate" actions (Chats -> Context Menu Elements).
+bool needToShowTranslate();
+
 void AddAyuGramActions(PeerData *peerData,
 							   Data::Thread *thread,
 							   not_null<Window::SessionController*> sessionController,

@@ -13,6 +13,7 @@
 #include "ayu/ui/settings/ayu_builder.h"
 #include "ayu/ui/settings/settings_ayu_utils.h"
 #include "ayu/ui/settings/settings_main.h"
+#include "ayu/ui/settings/settings_translator.h"
 #include "settings/settings_builder.h"
 #include "settings/settings_common.h"
 #include "styles/style_ayu_icons.h"
@@ -361,6 +362,29 @@ void BuildContextMenuElements(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 		.options = options,
 		.setter = [](int i) { AyuSettings::getInstance().setShowViewAsJsonInContextMenu(static_cast<ContextMenuVisibility>(i)); },
 		.icon = { &st::menuIconViewJson },
+	});
+	ayu.addChooseButton({
+		.id = u"ayu/showTranslateInContextMenu"_q,
+		.title = tr::lng_context_translate(),
+		.boxTitle = tr::ayu_SettingsContextMenuTitle(),
+		.initialSelection = static_cast<int>(settings->showTranslateInContextMenu()),
+		.options = options,
+		.setter = [](int i) { AyuSettings::getInstance().setShowTranslateInContextMenu(static_cast<ContextMenuVisibility>(i)); },
+		.icon = { &st::menuIconTranslate },
+		.gearClick = [controller = builder.controller()] {
+			if (controller) {
+				controller->showSettings(AyuTranslator::Id());
+			}
+		},
+	});
+	ayu.addChooseButton({
+		.id = u"ayu/showInlineCopyInContextMenu"_q,
+		.title = tr::ayu_CopyMenu(),
+		.boxTitle = tr::ayu_SettingsContextMenuTitle(),
+		.initialSelection = static_cast<int>(settings->showInlineCopyInContextMenu()),
+		.options = options,
+		.setter = [](int i) { AyuSettings::getInstance().setShowInlineCopyInContextMenu(static_cast<ContextMenuVisibility>(i)); },
+		.icon = { &st::menuIconCopy },
 	});
 	if (settings->filtersEnabled()) {
 		ayu.addChooseButton({

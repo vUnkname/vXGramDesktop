@@ -78,6 +78,18 @@ void AddChooseButtonWithIconAndRightText(not_null<Ui::VerticalLayout*> container
 										 const style::icon &icon,
 										 const Fn<void(int)> &setter);
 
+// Same as above, but with a vertical separator and a gear button on the right.
+not_null<Button*> AddChooseButtonWithGear(not_null<Ui::VerticalLayout*> container,
+										  not_null<Window::SessionController*> controller,
+										  int initialState,
+										  std::vector<QString> options,
+										  rpl::producer<QString> text,
+										  rpl::producer<QString> boxTitle,
+										  const style::SettingsButton &st,
+										  Settings::IconDescriptor &&descriptor,
+										  const Fn<void(int)> &setter,
+										  Fn<void()> onGear);
+
 void AddChooseButtonWithIconAndRightText(not_null<Ui::VerticalLayout*> container,
 										 not_null<Window::SessionController*> controller,
 										 int initialState,

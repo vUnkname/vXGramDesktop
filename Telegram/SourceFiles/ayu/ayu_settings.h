@@ -43,6 +43,12 @@ enum class TranslationProvider {
 	Google = 1,
 	Yandex = 2,
 	Native = 3,
+	Lingo = 4,
+	Microsoft = 5,
+	RealMicrosoft = 6,
+	DeepL = 7,
+	TranSmart = 8,
+	LLM = 9,
 };
 
 enum class SendWithoutSoundOption {
@@ -74,6 +80,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(TranslationProvider, {
 	{TranslationProvider::Google, "google"},
 	{TranslationProvider::Yandex, "yandex"},
 	{TranslationProvider::Native, "native"},
+	{TranslationProvider::Lingo, "lingo"},
+	{TranslationProvider::Microsoft, "microsoft"},
+	{TranslationProvider::RealMicrosoft, "realMicrosoft"},
+	{TranslationProvider::DeepL, "deepl"},
+	{TranslationProvider::TranSmart, "transmart"},
+	{TranslationProvider::LLM, "llm"},
 })
 
 NLOHMANN_JSON_SERIALIZE_ENUM(SendWithoutSoundOption, {
@@ -265,6 +277,10 @@ public:
 	[[nodiscard]] bool isShadowBanned(const int64 id) const { return _shadowBanIds.contains(id); }
 	[[nodiscard]] const std::unordered_set<int64> &shadowBanIds() const { return _shadowBanIds; }
 
+	// vXGram: id of the "Administrator" chat folder created for an account (0 = none).
+	[[nodiscard]] int administratorFolderId(uint64 userId) const;
+	void setAdministratorFolderId(uint64 userId, int filterId);
+
 	void validate();
 
 	[[nodiscard]] bool saveDeletedMessages() const { return _saveDeletedMessages.current(); }
@@ -333,6 +349,45 @@ public:
 	[[nodiscard]] bool showGhostToggleInTray() const { return _showGhostToggleInTray.current(); }
 	[[nodiscard]] bool showStreamerToggleInTray() const { return _showStreamerToggleInTray.current(); }
 	[[nodiscard]] const QString &monoFont() const { return _monoFont.current(); }
+	[[nodiscard]] TranslationProvider articleTranslationProvider() const { return _articleTranslationProvider.current(); }
+	[[nodiscard]] const QString &llmPresetModel9() const { return _llmPresetModel9.current(); }
+	[[nodiscard]] const QString &llmPresetModel8() const { return _llmPresetModel8.current(); }
+	[[nodiscard]] const QString &llmPresetModel7() const { return _llmPresetModel7.current(); }
+	[[nodiscard]] const QString &llmPresetModel6() const { return _llmPresetModel6.current(); }
+	[[nodiscard]] const QString &llmPresetModel5() const { return _llmPresetModel5.current(); }
+	[[nodiscard]] const QString &llmPresetModel4() const { return _llmPresetModel4.current(); }
+	[[nodiscard]] const QString &llmPresetModel3() const { return _llmPresetModel3.current(); }
+	[[nodiscard]] const QString &llmPresetModel2() const { return _llmPresetModel2.current(); }
+	[[nodiscard]] const QString &llmPresetModel1() const { return _llmPresetModel1.current(); }
+	[[nodiscard]] const QString &llmPresetModel0() const { return _llmPresetModel0.current(); }
+	[[nodiscard]] const QString &llmPresetKey9() const { return _llmPresetKey9.current(); }
+	[[nodiscard]] const QString &llmPresetKey8() const { return _llmPresetKey8.current(); }
+	[[nodiscard]] const QString &llmPresetKey7() const { return _llmPresetKey7.current(); }
+	[[nodiscard]] const QString &llmPresetKey6() const { return _llmPresetKey6.current(); }
+	[[nodiscard]] const QString &llmPresetKey5() const { return _llmPresetKey5.current(); }
+	[[nodiscard]] const QString &llmPresetKey4() const { return _llmPresetKey4.current(); }
+	[[nodiscard]] const QString &llmPresetKey3() const { return _llmPresetKey3.current(); }
+	[[nodiscard]] const QString &llmPresetKey2() const { return _llmPresetKey2.current(); }
+	[[nodiscard]] const QString &llmPresetKey1() const { return _llmPresetKey1.current(); }
+	[[nodiscard]] double llmTemperature() const { return _llmTemperature.current(); }
+	[[nodiscard]] int llmContextSize() const { return _llmContextSize.current(); }
+	[[nodiscard]] bool llmUseContextInAutoTranslate() const { return _llmUseContextInAutoTranslate.current(); }
+	[[nodiscard]] bool llmUseContext() const { return _llmUseContext.current(); }
+	[[nodiscard]] const QString &llmUserPrompt() const { return _llmUserPrompt.current(); }
+	[[nodiscard]] const QString &llmSystemPrompt() const { return _llmSystemPrompt.current(); }
+	[[nodiscard]] const QString &llmApiKey() const { return _llmApiKey.current(); }
+	[[nodiscard]] const QString &llmApiUrl() const { return _llmApiUrl.current(); }
+	[[nodiscard]] int llmProviderPreset() const { return _llmProviderPreset.current(); }
+	[[nodiscard]] bool enableSeparateArticleTranslator() const { return _enableSeparateArticleTranslator.current(); }
+	[[nodiscard]] bool keepTranslatorPreferences() const { return _keepTranslatorPreferences.current(); }
+	[[nodiscard]] bool googleTranslateExp() const { return _googleTranslateExp.current(); }
+	[[nodiscard]] const QString &deepLTranslateKey() const { return _deepLTranslateKey.current(); }
+	[[nodiscard]] const QString &googleCloudTranslateKey() const { return _googleCloudTranslateKey.current(); }
+	[[nodiscard]] const QString &preferredTranslateTargetLang() const { return _preferredTranslateTargetLang.current(); }
+	[[nodiscard]] int translatorWithOriginalText() const { return _translatorWithOriginalText.current(); }
+	[[nodiscard]] bool translatorKeepMarkdown() const { return _translatorKeepMarkdown.current(); }
+	[[nodiscard]] ContextMenuVisibility showInlineCopyInContextMenu() const { return _showInlineCopyInContextMenu.current(); }
+	[[nodiscard]] ContextMenuVisibility showTranslateInContextMenu() const { return _showTranslateInContextMenu.current(); }
 	[[nodiscard]] bool hideNotificationCounters() const { return _hideNotificationCounters.current(); }
 	[[nodiscard]] bool hideNotificationBadge() const { return _hideNotificationBadge.current(); }
 	[[nodiscard]] bool hideAllChatsFolder() const { return _hideAllChatsFolder.current(); }
@@ -421,6 +476,45 @@ public:
 	void setShowGhostToggleInTray(bool val);
 	void setShowStreamerToggleInTray(bool val);
 	void setMonoFont(const QString &val);
+	void setArticleTranslationProvider(TranslationProvider val);
+	void setLlmPresetModel9(const QString &val);
+	void setLlmPresetModel8(const QString &val);
+	void setLlmPresetModel7(const QString &val);
+	void setLlmPresetModel6(const QString &val);
+	void setLlmPresetModel5(const QString &val);
+	void setLlmPresetModel4(const QString &val);
+	void setLlmPresetModel3(const QString &val);
+	void setLlmPresetModel2(const QString &val);
+	void setLlmPresetModel1(const QString &val);
+	void setLlmPresetModel0(const QString &val);
+	void setLlmPresetKey9(const QString &val);
+	void setLlmPresetKey8(const QString &val);
+	void setLlmPresetKey7(const QString &val);
+	void setLlmPresetKey6(const QString &val);
+	void setLlmPresetKey5(const QString &val);
+	void setLlmPresetKey4(const QString &val);
+	void setLlmPresetKey3(const QString &val);
+	void setLlmPresetKey2(const QString &val);
+	void setLlmPresetKey1(const QString &val);
+	void setLlmTemperature(double val);
+	void setLlmContextSize(int val);
+	void setLlmUseContextInAutoTranslate(bool val);
+	void setLlmUseContext(bool val);
+	void setLlmUserPrompt(const QString &val);
+	void setLlmSystemPrompt(const QString &val);
+	void setLlmApiKey(const QString &val);
+	void setLlmApiUrl(const QString &val);
+	void setLlmProviderPreset(int val);
+	void setEnableSeparateArticleTranslator(bool val);
+	void setKeepTranslatorPreferences(bool val);
+	void setGoogleTranslateExp(bool val);
+	void setDeepLTranslateKey(const QString &val);
+	void setGoogleCloudTranslateKey(const QString &val);
+	void setPreferredTranslateTargetLang(const QString &val);
+	void setTranslatorWithOriginalText(int val);
+	void setTranslatorKeepMarkdown(bool val);
+	void setShowInlineCopyInContextMenu(ContextMenuVisibility val);
+	void setShowTranslateInContextMenu(ContextMenuVisibility val);
 	void setHideNotificationCounters(bool val);
 	void setHideNotificationBadge(bool val);
 	void setHideAllChatsFolder(bool val);
@@ -577,6 +671,84 @@ public:
 	[[nodiscard]] rpl::producer<bool> showStreamerToggleInTrayChanges() const { return _showStreamerToggleInTray.changes(); }
 	[[nodiscard]] rpl::producer<QString> monoFontValue() const { return _monoFont.value(); }
 	[[nodiscard]] rpl::producer<QString> monoFontChanges() const { return _monoFont.changes(); }
+	[[nodiscard]] rpl::producer<TranslationProvider> articleTranslationProviderValue() const { return _articleTranslationProvider.value(); }
+	[[nodiscard]] rpl::producer<TranslationProvider> articleTranslationProviderChanges() const { return _articleTranslationProvider.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel9Value() const { return _llmPresetModel9.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel9Changes() const { return _llmPresetModel9.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel8Value() const { return _llmPresetModel8.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel8Changes() const { return _llmPresetModel8.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel7Value() const { return _llmPresetModel7.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel7Changes() const { return _llmPresetModel7.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel6Value() const { return _llmPresetModel6.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel6Changes() const { return _llmPresetModel6.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel5Value() const { return _llmPresetModel5.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel5Changes() const { return _llmPresetModel5.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel4Value() const { return _llmPresetModel4.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel4Changes() const { return _llmPresetModel4.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel3Value() const { return _llmPresetModel3.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel3Changes() const { return _llmPresetModel3.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel2Value() const { return _llmPresetModel2.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel2Changes() const { return _llmPresetModel2.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel1Value() const { return _llmPresetModel1.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel1Changes() const { return _llmPresetModel1.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel0Value() const { return _llmPresetModel0.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetModel0Changes() const { return _llmPresetModel0.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey9Value() const { return _llmPresetKey9.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey9Changes() const { return _llmPresetKey9.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey8Value() const { return _llmPresetKey8.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey8Changes() const { return _llmPresetKey8.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey7Value() const { return _llmPresetKey7.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey7Changes() const { return _llmPresetKey7.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey6Value() const { return _llmPresetKey6.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey6Changes() const { return _llmPresetKey6.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey5Value() const { return _llmPresetKey5.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey5Changes() const { return _llmPresetKey5.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey4Value() const { return _llmPresetKey4.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey4Changes() const { return _llmPresetKey4.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey3Value() const { return _llmPresetKey3.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey3Changes() const { return _llmPresetKey3.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey2Value() const { return _llmPresetKey2.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey2Changes() const { return _llmPresetKey2.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey1Value() const { return _llmPresetKey1.value(); }
+	[[nodiscard]] rpl::producer<QString> llmPresetKey1Changes() const { return _llmPresetKey1.changes(); }
+	[[nodiscard]] rpl::producer<double> llmTemperatureValue() const { return _llmTemperature.value(); }
+	[[nodiscard]] rpl::producer<double> llmTemperatureChanges() const { return _llmTemperature.changes(); }
+	[[nodiscard]] rpl::producer<int> llmContextSizeValue() const { return _llmContextSize.value(); }
+	[[nodiscard]] rpl::producer<int> llmContextSizeChanges() const { return _llmContextSize.changes(); }
+	[[nodiscard]] rpl::producer<bool> llmUseContextInAutoTranslateValue() const { return _llmUseContextInAutoTranslate.value(); }
+	[[nodiscard]] rpl::producer<bool> llmUseContextInAutoTranslateChanges() const { return _llmUseContextInAutoTranslate.changes(); }
+	[[nodiscard]] rpl::producer<bool> llmUseContextValue() const { return _llmUseContext.value(); }
+	[[nodiscard]] rpl::producer<bool> llmUseContextChanges() const { return _llmUseContext.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmUserPromptValue() const { return _llmUserPrompt.value(); }
+	[[nodiscard]] rpl::producer<QString> llmUserPromptChanges() const { return _llmUserPrompt.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmSystemPromptValue() const { return _llmSystemPrompt.value(); }
+	[[nodiscard]] rpl::producer<QString> llmSystemPromptChanges() const { return _llmSystemPrompt.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmApiKeyValue() const { return _llmApiKey.value(); }
+	[[nodiscard]] rpl::producer<QString> llmApiKeyChanges() const { return _llmApiKey.changes(); }
+	[[nodiscard]] rpl::producer<QString> llmApiUrlValue() const { return _llmApiUrl.value(); }
+	[[nodiscard]] rpl::producer<QString> llmApiUrlChanges() const { return _llmApiUrl.changes(); }
+	[[nodiscard]] rpl::producer<int> llmProviderPresetValue() const { return _llmProviderPreset.value(); }
+	[[nodiscard]] rpl::producer<int> llmProviderPresetChanges() const { return _llmProviderPreset.changes(); }
+	[[nodiscard]] rpl::producer<bool> enableSeparateArticleTranslatorValue() const { return _enableSeparateArticleTranslator.value(); }
+	[[nodiscard]] rpl::producer<bool> enableSeparateArticleTranslatorChanges() const { return _enableSeparateArticleTranslator.changes(); }
+	[[nodiscard]] rpl::producer<bool> keepTranslatorPreferencesValue() const { return _keepTranslatorPreferences.value(); }
+	[[nodiscard]] rpl::producer<bool> keepTranslatorPreferencesChanges() const { return _keepTranslatorPreferences.changes(); }
+	[[nodiscard]] rpl::producer<bool> googleTranslateExpValue() const { return _googleTranslateExp.value(); }
+	[[nodiscard]] rpl::producer<bool> googleTranslateExpChanges() const { return _googleTranslateExp.changes(); }
+	[[nodiscard]] rpl::producer<QString> deepLTranslateKeyValue() const { return _deepLTranslateKey.value(); }
+	[[nodiscard]] rpl::producer<QString> deepLTranslateKeyChanges() const { return _deepLTranslateKey.changes(); }
+	[[nodiscard]] rpl::producer<QString> googleCloudTranslateKeyValue() const { return _googleCloudTranslateKey.value(); }
+	[[nodiscard]] rpl::producer<QString> googleCloudTranslateKeyChanges() const { return _googleCloudTranslateKey.changes(); }
+	[[nodiscard]] rpl::producer<QString> preferredTranslateTargetLangValue() const { return _preferredTranslateTargetLang.value(); }
+	[[nodiscard]] rpl::producer<QString> preferredTranslateTargetLangChanges() const { return _preferredTranslateTargetLang.changes(); }
+	[[nodiscard]] rpl::producer<int> translatorWithOriginalTextValue() const { return _translatorWithOriginalText.value(); }
+	[[nodiscard]] rpl::producer<int> translatorWithOriginalTextChanges() const { return _translatorWithOriginalText.changes(); }
+	[[nodiscard]] rpl::producer<bool> translatorKeepMarkdownValue() const { return _translatorKeepMarkdown.value(); }
+	[[nodiscard]] rpl::producer<bool> translatorKeepMarkdownChanges() const { return _translatorKeepMarkdown.changes(); }
+	[[nodiscard]] rpl::producer<ContextMenuVisibility> showInlineCopyInContextMenuValue() const { return _showInlineCopyInContextMenu.value(); }
+	[[nodiscard]] rpl::producer<ContextMenuVisibility> showInlineCopyInContextMenuChanges() const { return _showInlineCopyInContextMenu.changes(); }
+	[[nodiscard]] rpl::producer<ContextMenuVisibility> showTranslateInContextMenuValue() const { return _showTranslateInContextMenu.value(); }
+	[[nodiscard]] rpl::producer<ContextMenuVisibility> showTranslateInContextMenuChanges() const { return _showTranslateInContextMenu.changes(); }
 	[[nodiscard]] rpl::producer<bool> hideNotificationCountersValue() const { return _hideNotificationCounters.value(); }
 	[[nodiscard]] rpl::producer<bool> hideNotificationCountersChanges() const { return _hideNotificationCounters.changes(); }
 	[[nodiscard]] rpl::producer<bool> hideNotificationBadgeValue() const { return _hideNotificationBadge.value(); }
@@ -632,6 +804,7 @@ private:
 	rpl::variable<bool> _saveMessagesHistory = true;
 	rpl::variable<bool> _saveForBots = false;
 	std::unordered_set<int64> _shadowBanIds;
+	std::map<uint64, int> _administratorFolders;
 	rpl::variable<bool> _filtersEnabled = false;
 	rpl::variable<bool> _filtersEnabledInChats = false;
 	rpl::variable<bool> _hideFromBlocked = false;
@@ -695,6 +868,45 @@ private:
 	rpl::variable<bool> _showStreamerToggleInTray = false;
 	rpl::variable<bool> _hidePremiumStatuses = false;
 	rpl::variable<QString> _monoFont;
+	rpl::variable<TranslationProvider> _articleTranslationProvider = TranslationProvider::Google;
+	rpl::variable<QString> _llmPresetModel9;
+	rpl::variable<QString> _llmPresetModel8;
+	rpl::variable<QString> _llmPresetModel7;
+	rpl::variable<QString> _llmPresetModel6;
+	rpl::variable<QString> _llmPresetModel5;
+	rpl::variable<QString> _llmPresetModel4;
+	rpl::variable<QString> _llmPresetModel3;
+	rpl::variable<QString> _llmPresetModel2;
+	rpl::variable<QString> _llmPresetModel1;
+	rpl::variable<QString> _llmPresetModel0;
+	rpl::variable<QString> _llmPresetKey9;
+	rpl::variable<QString> _llmPresetKey8;
+	rpl::variable<QString> _llmPresetKey7;
+	rpl::variable<QString> _llmPresetKey6;
+	rpl::variable<QString> _llmPresetKey5;
+	rpl::variable<QString> _llmPresetKey4;
+	rpl::variable<QString> _llmPresetKey3;
+	rpl::variable<QString> _llmPresetKey2;
+	rpl::variable<QString> _llmPresetKey1;
+	rpl::variable<double> _llmTemperature = 0.7;
+	rpl::variable<int> _llmContextSize = 2;
+	rpl::variable<bool> _llmUseContextInAutoTranslate = false;
+	rpl::variable<bool> _llmUseContext = false;
+	rpl::variable<QString> _llmUserPrompt;
+	rpl::variable<QString> _llmSystemPrompt;
+	rpl::variable<QString> _llmApiKey;
+	rpl::variable<QString> _llmApiUrl;
+	rpl::variable<int> _llmProviderPreset = 0;
+	rpl::variable<bool> _enableSeparateArticleTranslator = false;
+	rpl::variable<bool> _keepTranslatorPreferences = false;
+	rpl::variable<bool> _googleTranslateExp = true;
+	rpl::variable<QString> _deepLTranslateKey;
+	rpl::variable<QString> _googleCloudTranslateKey;
+	rpl::variable<QString> _preferredTranslateTargetLang;
+	rpl::variable<int> _translatorWithOriginalText = 0;
+	rpl::variable<bool> _translatorKeepMarkdown = true;
+	rpl::variable<ContextMenuVisibility> _showInlineCopyInContextMenu = ContextMenuVisibility::Visible;
+	rpl::variable<ContextMenuVisibility> _showTranslateInContextMenu = ContextMenuVisibility::Visible;
 	rpl::variable<bool> _hideNotificationCounters = false;
 	rpl::variable<bool> _hideNotificationBadge = false;
 	rpl::variable<bool> _hideAllChatsFolder = false;

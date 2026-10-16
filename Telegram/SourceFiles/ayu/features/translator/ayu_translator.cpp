@@ -7,7 +7,12 @@
 #include "ayu/features/translator/ayu_translator.h"
 
 #include "api/api_text_entities.h"
-#include "ayu/features/translator/implementations/google.h"
+#include "ayu/features/translator/implementations/deepl.h"
+#include "ayu/features/translator/implementations/google_app.h"
+#include "ayu/features/translator/implementations/lingo.h"
+#include "ayu/features/translator/implementations/llm.h"
+#include "ayu/features/translator/implementations/microsoft.h"
+#include "ayu/features/translator/implementations/transmart.h"
 #include "ayu/features/translator/implementations/yandex.h"
 #include "data/data_peer.h"
 #include "data/data_session.h"
@@ -28,7 +33,19 @@ BaseTranslator *translatorForProvider(TranslationProvider provider) {
 	case TranslationProvider::Yandex:
 		return &YandexTranslator::instance();
 	case TranslationProvider::Google:
-		return &GoogleTranslator::instance();
+		return &GoogleAppTranslator::instance();
+	case TranslationProvider::Lingo:
+		return &LingoTranslator::instance();
+	case TranslationProvider::Microsoft:
+		return &MicrosoftTranslator::instance();
+	case TranslationProvider::RealMicrosoft:
+		return &RealMicrosoftTranslator::instance();
+	case TranslationProvider::DeepL:
+		return &DeepLTranslator::instance();
+	case TranslationProvider::TranSmart:
+		return &TranSmartTranslator::instance();
+	case TranslationProvider::LLM:
+		return &LLMTranslator::instance();
 	case TranslationProvider::Telegram:
 	case TranslationProvider::Native:
 		return nullptr;
@@ -93,6 +110,7 @@ TranslateManager::Builder TranslateManager::request(
 }
 
 mtpRequestId TranslateManager::performTranslation(Builder &req) {
+	const auto llmContext = std::exchange(_nextLlmContext, QString());
 	const auto id = _nextId++;
 	_pending.emplace(
 		id,
@@ -228,6 +246,7 @@ mtpRequestId TranslateManager::performTranslation(Builder &req) {
 			.texts = uncachedTexts,
 			.fromLang = fromLang,
 			.toLang = toLang,
+			.llmContext = llmContext,
 		},
 		.onSuccess = std::move(onSuccess),
 		.onFail = std::move(onFail),

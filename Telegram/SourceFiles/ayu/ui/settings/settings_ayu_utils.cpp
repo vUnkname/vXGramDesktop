@@ -582,6 +582,61 @@ not_null<Button*> AddChooseButtonWithIconAndRightTextInner(not_null<Ui::Vertical
 	return button;
 }
 
+not_null<Button*> AddChooseButtonWithGear(not_null<Ui::VerticalLayout*> container,
+										  not_null<Window::SessionController*> controller,
+										  int initialState,
+										  std::vector<QString> options,
+										  rpl::producer<QString> text,
+										  rpl::producer<QString> boxTitle,
+										  const style::SettingsButton &st,
+										  Settings::IconDescriptor &&descriptor,
+										  const Fn<void(int)> &setter,
+										  Fn<void()> onGear) {
+	const auto wrap = container->add(
+		object_ptr<Ui::PaddingWrap<Ui::VerticalLayout>>(
+			container,
+			object_ptr<Ui::VerticalLayout>(container),
+			style::margins(0, 0, st::ayuSettingsGearAreaWidth, 0)));
+
+	const auto button = AddChooseButtonWithIconAndRightTextInner(
+		wrap->entity(),
+		controller,
+		initialState,
+		std::move(options),
+		std::move(text),
+		std::move(boxTitle),
+		st,
+		std::move(descriptor),
+		setter);
+
+	const auto separator = Ui::CreateChild<Ui::RpWidget>(wrap);
+	separator->setAttribute(Qt::WA_TransparentForMouseEvents);
+	separator->paintRequest(
+	) | rpl::on_next([=] {
+		auto p = QPainter(separator);
+		p.setOpacity(0.35);
+		p.fillRect(separator->rect(), st::windowSubTextFg);
+	}, separator->lifetime());
+
+	const auto gear = Ui::CreateChild<Ui::IconButton>(
+		wrap,
+		st::ayuSettingsGearButton);
+	gear->setClickedCallback(std::move(onGear));
+
+	wrap->sizeValue(
+	) | rpl::on_next([=](QSize size) {
+		gear->moveToRight(0, (size.height() - gear->height()) / 2, size.width());
+		const auto skip = st::ayuSettingsGearSeparatorSkip;
+		separator->setGeometry(
+			size.width() - st::ayuSettingsGearAreaWidth,
+			skip,
+			st::lineWidth,
+			std::max(0, size.height() - 2 * skip));
+	}, wrap->lifetime());
+
+	return button;
+}
+
 void AddChooseButtonWithIconAndRightText(not_null<Ui::VerticalLayout*> container,
 										 not_null<Window::SessionController*> controller,
 										 int initialState,

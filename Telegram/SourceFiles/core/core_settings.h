@@ -912,6 +912,9 @@ public:
 	void setTranslateTo(LanguageId id);
 	[[nodiscard]] LanguageId translateTo() const;
 	[[nodiscard]] rpl::producer<LanguageId> translateToValue() const;
+	// vXGram: "Follow App" target language (no explicit language chosen).
+	[[nodiscard]] bool translateToFollowsApp() const;
+	[[nodiscard]] rpl::producer<bool> translateToFollowsAppValue() const;
 	void setSkipTranslationLanguages(std::vector<LanguageId> languages);
 	[[nodiscard]] std::vector<LanguageId> skipTranslationLanguages() const;
 	[[nodiscard]] auto skipTranslationLanguagesValue() const

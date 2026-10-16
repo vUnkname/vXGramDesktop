@@ -46,17 +46,28 @@ base::options::option<QString> OptionTranslateUrlTemplate({
 namespace Ui {
 
 std::unique_ptr<TranslateProvider> CreateTranslateProvider(
-		not_null<Main::Session*> session) {
+		not_null<Main::Session*> session,
+		bool automatic,
+		bool article) {
 	const auto urlTemplate = OptionTranslateUrlTemplate.value();
 	if (!urlTemplate.isEmpty()
 		&& urlTemplate.contains(u"%q"_q)) {
 		return CreateUrlTranslateProvider(urlTemplate);
 	}
-	const auto provider = ResolveTranslateProvider();
+	const auto &settings = AyuSettings::getInstance();
+	const auto provider = (article && settings.enableSeparateArticleTranslator())
+		? settings.articleTranslationProvider()
+		: ResolveTranslateProvider();
 	switch (provider) {
 	case TranslationProvider::Google:
 	case TranslationProvider::Yandex:
-		return CreateAyuTranslateProvider(session, provider);
+	case TranslationProvider::Lingo:
+	case TranslationProvider::Microsoft:
+	case TranslationProvider::RealMicrosoft:
+	case TranslationProvider::DeepL:
+	case TranslationProvider::TranSmart:
+	case TranslationProvider::LLM:
+		return CreateAyuTranslateProvider(session, provider, automatic);
 	case TranslationProvider::Native:
 		if (auto native = Platform::CreateTranslateProvider()) {
 			return native;

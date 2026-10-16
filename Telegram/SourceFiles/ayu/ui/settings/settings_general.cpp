@@ -33,88 +33,6 @@ using namespace AyuBuilder;
 
 namespace {
 
-void BuildTranslator(SectionBuilder &builder, AyuSectionBuilder &ayu) {
-	builder.addSubsectionTitle(tr::lng_translate_settings_subtitle());
-
-	auto *settings = &AyuSettings::getInstance();
-
-	const auto options = std::vector{
-		std::pair(TranslationProvider::Telegram, QString("Telegram")),
-		std::pair(TranslationProvider::Google, QString("Google")),
-		std::pair(TranslationProvider::Yandex, QString("Yandex")),
-	};
-	const auto nativeAvailable = Platform::IsTranslateProviderAvailable();
-	auto availableOptions = options;
-	if (nativeAvailable) {
-		availableOptions.push_back(std::pair(
-			TranslationProvider::Native,
-			[] {
-				if constexpr (Platform::IsMac()) {
-					return QString("macOS");
-				} else if constexpr (Platform::IsWindows()) {
-					return QString("Windows");
-				} else {
-					return QString("Linux");
-				}
-			}()));
-	}
-	auto optionLabels = std::vector<QString>();
-	optionLabels.reserve(availableOptions.size());
-	for (const auto &option : availableOptions) {
-		optionLabels.push_back(option.second);
-	}
-
-	const auto getIndex = [=](TranslationProvider val) {
-		const auto i = ranges::find(
-			availableOptions,
-			val,
-			&std::pair<TranslationProvider, QString>::first);
-		return (i != end(availableOptions))
-			? int(i - begin(availableOptions))
-			: 0;
-	};
-
-	auto currentVal = AyuSettings::getInstance().translationProviderValue()
-		| rpl::map(getIndex)
-		| rpl::map([=](int val) { return availableOptions[val].second; });
-
-	const auto button = builder.addButton({
-		.id = u"ayu/translationProvider"_q,
-		.title = tr::ayu_TranslationProvider(),
-		.st = &st::settingsButtonNoIcon,
-		.label = std::move(currentVal),
-		.onClick = [=] {
-			if (const auto controller = Core::App().activeWindow()->sessionController()) {
-				controller->show(Box(
-						[=](not_null<Ui::GenericBox*> box) {
-							const auto save = [=](int index) {
-								const auto option = availableOptions[index].first;
-								AyuSettings::getInstance().setTranslationProvider(option);
-
-								if constexpr (Platform::IsMac()) {
-									if (option == TranslationProvider::Native) {
-										controller->showToast(Ui::Toast::Config{
-											.text = tr::lng_translate_settings_use_platform_mac_about(tr::now, tr::rich),
-											.duration = 6 * crl::time(1000)
-										});
-									}
-								}
-							};
-							SingleChoiceBox(box, {
-								.title = tr::ayu_TranslationProvider(),
-								.options = optionLabels,
-								.initialSelection = getIndex(settings->translationProvider()),
-								.callback = save,
-							});
-						}));
-			}
-		},
-	});
-	if (button) {
-		ayu.addBetaBadge(button);
-	}
-}
-
 void BuildShowPeerId(SectionBuilder &builder) {
 	auto *settings = &AyuSettings::getInstance();
 
@@ -156,9 +74,6 @@ void BuildShowPeerId(SectionBuilder &builder) {
 
 void BuildQoLToggles(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 	auto *settings = &AyuSettings::getInstance();
-
-	BuildTranslator(builder, ayu);
-	ayu.addSectionDivider();
 
 	builder.addSubsectionTitle(tr::ayu_CategoryGeneral());
 

@@ -479,6 +479,260 @@ void AyuSettings::removeShadowBan(int64 id) {
 	}
 }
 
+int AyuSettings::administratorFolderId(uint64 userId) const {
+	const auto i = _administratorFolders.find(userId);
+	return (i != _administratorFolders.end()) ? i->second : 0;
+}
+
+void AyuSettings::setAdministratorFolderId(uint64 userId, int filterId) {
+	if (filterId <= 0) {
+		if (_administratorFolders.erase(userId) == 0) {
+			return;
+		}
+	} else {
+		const auto i = _administratorFolders.find(userId);
+		if (i != _administratorFolders.end() && i->second == filterId) {
+			return;
+		}
+		_administratorFolders[userId] = filterId;
+	}
+	save();
+}
+
+void AyuSettings::setShowTranslateInContextMenu(ContextMenuVisibility val) {
+	if (_showTranslateInContextMenu.current() == val) return;
+	_showTranslateInContextMenu = val;
+	save();
+}
+
+void AyuSettings::setShowInlineCopyInContextMenu(ContextMenuVisibility val) {
+	if (_showInlineCopyInContextMenu.current() == val) return;
+	_showInlineCopyInContextMenu = val;
+	save();
+}
+
+void AyuSettings::setTranslatorKeepMarkdown(bool val) {
+	if (_translatorKeepMarkdown.current() == val) return;
+	_translatorKeepMarkdown = val;
+	save();
+}
+
+void AyuSettings::setTranslatorWithOriginalText(int val) {
+	if (_translatorWithOriginalText.current() == val) return;
+	_translatorWithOriginalText = val;
+	save();
+}
+
+void AyuSettings::setPreferredTranslateTargetLang(const QString &val) {
+	if (_preferredTranslateTargetLang.current() == val) return;
+	_preferredTranslateTargetLang = val;
+	save();
+}
+
+void AyuSettings::setGoogleCloudTranslateKey(const QString &val) {
+	if (_googleCloudTranslateKey.current() == val) return;
+	_googleCloudTranslateKey = val;
+	save();
+}
+
+void AyuSettings::setDeepLTranslateKey(const QString &val) {
+	if (_deepLTranslateKey.current() == val) return;
+	_deepLTranslateKey = val;
+	save();
+}
+
+void AyuSettings::setGoogleTranslateExp(bool val) {
+	if (_googleTranslateExp.current() == val) return;
+	_googleTranslateExp = val;
+	save();
+}
+
+void AyuSettings::setKeepTranslatorPreferences(bool val) {
+	if (_keepTranslatorPreferences.current() == val) return;
+	_keepTranslatorPreferences = val;
+	save();
+}
+
+void AyuSettings::setEnableSeparateArticleTranslator(bool val) {
+	if (_enableSeparateArticleTranslator.current() == val) return;
+	_enableSeparateArticleTranslator = val;
+	save();
+}
+
+void AyuSettings::setLlmProviderPreset(int val) {
+	if (_llmProviderPreset.current() == val) return;
+	_llmProviderPreset = val;
+	save();
+}
+
+void AyuSettings::setLlmApiUrl(const QString &val) {
+	if (_llmApiUrl.current() == val) return;
+	_llmApiUrl = val;
+	save();
+}
+
+void AyuSettings::setLlmApiKey(const QString &val) {
+	if (_llmApiKey.current() == val) return;
+	_llmApiKey = val;
+	save();
+}
+
+void AyuSettings::setLlmSystemPrompt(const QString &val) {
+	if (_llmSystemPrompt.current() == val) return;
+	_llmSystemPrompt = val;
+	save();
+}
+
+void AyuSettings::setLlmUserPrompt(const QString &val) {
+	if (_llmUserPrompt.current() == val) return;
+	_llmUserPrompt = val;
+	save();
+}
+
+void AyuSettings::setLlmUseContext(bool val) {
+	if (_llmUseContext.current() == val) return;
+	_llmUseContext = val;
+	save();
+}
+
+void AyuSettings::setLlmUseContextInAutoTranslate(bool val) {
+	if (_llmUseContextInAutoTranslate.current() == val) return;
+	_llmUseContextInAutoTranslate = val;
+	save();
+}
+
+void AyuSettings::setLlmContextSize(int val) {
+	if (_llmContextSize.current() == val) return;
+	_llmContextSize = val;
+	save();
+}
+
+void AyuSettings::setLlmTemperature(double val) {
+	if (_llmTemperature.current() == val) return;
+	_llmTemperature = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey1(const QString &val) {
+	if (_llmPresetKey1.current() == val) return;
+	_llmPresetKey1 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey2(const QString &val) {
+	if (_llmPresetKey2.current() == val) return;
+	_llmPresetKey2 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey3(const QString &val) {
+	if (_llmPresetKey3.current() == val) return;
+	_llmPresetKey3 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey4(const QString &val) {
+	if (_llmPresetKey4.current() == val) return;
+	_llmPresetKey4 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey5(const QString &val) {
+	if (_llmPresetKey5.current() == val) return;
+	_llmPresetKey5 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey6(const QString &val) {
+	if (_llmPresetKey6.current() == val) return;
+	_llmPresetKey6 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey7(const QString &val) {
+	if (_llmPresetKey7.current() == val) return;
+	_llmPresetKey7 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey8(const QString &val) {
+	if (_llmPresetKey8.current() == val) return;
+	_llmPresetKey8 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetKey9(const QString &val) {
+	if (_llmPresetKey9.current() == val) return;
+	_llmPresetKey9 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel0(const QString &val) {
+	if (_llmPresetModel0.current() == val) return;
+	_llmPresetModel0 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel1(const QString &val) {
+	if (_llmPresetModel1.current() == val) return;
+	_llmPresetModel1 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel2(const QString &val) {
+	if (_llmPresetModel2.current() == val) return;
+	_llmPresetModel2 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel3(const QString &val) {
+	if (_llmPresetModel3.current() == val) return;
+	_llmPresetModel3 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel4(const QString &val) {
+	if (_llmPresetModel4.current() == val) return;
+	_llmPresetModel4 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel5(const QString &val) {
+	if (_llmPresetModel5.current() == val) return;
+	_llmPresetModel5 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel6(const QString &val) {
+	if (_llmPresetModel6.current() == val) return;
+	_llmPresetModel6 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel7(const QString &val) {
+	if (_llmPresetModel7.current() == val) return;
+	_llmPresetModel7 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel8(const QString &val) {
+	if (_llmPresetModel8.current() == val) return;
+	_llmPresetModel8 = val;
+	save();
+}
+
+void AyuSettings::setLlmPresetModel9(const QString &val) {
+	if (_llmPresetModel9.current() == val) return;
+	_llmPresetModel9 = val;
+	save();
+}
+
+void AyuSettings::setArticleTranslationProvider(TranslationProvider val) {
+	if (_articleTranslationProvider.current() == val) return;
+	_articleTranslationProvider = val;
+	save();
+}
+
 void AyuSettings::validate() {
 	AyuSettings defaults;
 	auto modified = false;
@@ -508,8 +762,11 @@ void AyuSettings::validate() {
 	validateEnum(_showRepeatMessageInContextMenu, defaults._showRepeatMessageInContextMenu);
 	validateEnum(_showAddFilterInContextMenu, defaults._showAddFilterInContextMenu);
 	validateEnum(_showViewAsJsonInContextMenu, defaults._showViewAsJsonInContextMenu);
+	validateEnum(_articleTranslationProvider, defaults._articleTranslationProvider, 9);
+	validateEnum(_showInlineCopyInContextMenu, defaults._showInlineCopyInContextMenu);
+	validateEnum(_showTranslateInContextMenu, defaults._showTranslateInContextMenu);
 
-	validateEnum(_translationProvider, defaults._translationProvider, 3);
+	validateEnum(_translationProvider, defaults._translationProvider, 9);
 	if ((_translationProvider.current() == TranslationProvider::Native)
 		&& !Platform::IsTranslateProviderAvailable()) {
 		_translationProvider = defaults._translationProvider.current();
@@ -1082,8 +1339,14 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		ghostAccounts[std::to_string(key)] = *value;
 	}
 
+	auto administratorFolders = nlohmann::json::object();
+	for (const auto &[key, value] : s._administratorFolders) {
+		administratorFolders[std::to_string(key)] = value;
+	}
+
 	j = nlohmann::json{
 		{"ghostModeSettings", ghostAccounts},
+		{"administratorFolders", administratorFolders},
 		{"useGlobalGhostMode", s._useGlobalGhostMode.current()},
 		{"saveDeletedMessages", s._saveDeletedMessages.current()},
 		{"saveMessagesHistory", s._saveMessagesHistory.current()},
@@ -1152,6 +1415,45 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"showGhostToggleInTray", s._showGhostToggleInTray.current()},
 		{"showStreamerToggleInTray", s._showStreamerToggleInTray.current()},
 		{"monoFont", s._monoFont.current()},
+		{"articleTranslationProvider", s._articleTranslationProvider.current()},
+		{"llmPresetModel9", s._llmPresetModel9.current()},
+		{"llmPresetModel8", s._llmPresetModel8.current()},
+		{"llmPresetModel7", s._llmPresetModel7.current()},
+		{"llmPresetModel6", s._llmPresetModel6.current()},
+		{"llmPresetModel5", s._llmPresetModel5.current()},
+		{"llmPresetModel4", s._llmPresetModel4.current()},
+		{"llmPresetModel3", s._llmPresetModel3.current()},
+		{"llmPresetModel2", s._llmPresetModel2.current()},
+		{"llmPresetModel1", s._llmPresetModel1.current()},
+		{"llmPresetModel0", s._llmPresetModel0.current()},
+		{"llmPresetKey9", s._llmPresetKey9.current()},
+		{"llmPresetKey8", s._llmPresetKey8.current()},
+		{"llmPresetKey7", s._llmPresetKey7.current()},
+		{"llmPresetKey6", s._llmPresetKey6.current()},
+		{"llmPresetKey5", s._llmPresetKey5.current()},
+		{"llmPresetKey4", s._llmPresetKey4.current()},
+		{"llmPresetKey3", s._llmPresetKey3.current()},
+		{"llmPresetKey2", s._llmPresetKey2.current()},
+		{"llmPresetKey1", s._llmPresetKey1.current()},
+		{"llmTemperature", s._llmTemperature.current()},
+		{"llmContextSize", s._llmContextSize.current()},
+		{"llmUseContextInAutoTranslate", s._llmUseContextInAutoTranslate.current()},
+		{"llmUseContext", s._llmUseContext.current()},
+		{"llmUserPrompt", s._llmUserPrompt.current()},
+		{"llmSystemPrompt", s._llmSystemPrompt.current()},
+		{"llmApiKey", s._llmApiKey.current()},
+		{"llmApiUrl", s._llmApiUrl.current()},
+		{"llmProviderPreset", s._llmProviderPreset.current()},
+		{"enableSeparateArticleTranslator", s._enableSeparateArticleTranslator.current()},
+		{"keepTranslatorPreferences", s._keepTranslatorPreferences.current()},
+		{"googleTranslateExp", s._googleTranslateExp.current()},
+		{"deepLTranslateKey", s._deepLTranslateKey.current()},
+		{"googleCloudTranslateKey", s._googleCloudTranslateKey.current()},
+		{"preferredTranslateTargetLang", s._preferredTranslateTargetLang.current()},
+		{"translatorWithOriginalText", s._translatorWithOriginalText.current()},
+		{"translatorKeepMarkdown", s._translatorKeepMarkdown.current()},
+		{"showInlineCopyInContextMenu", s._showInlineCopyInContextMenu.current()},
+		{"showTranslateInContextMenu", s._showTranslateInContextMenu.current()},
 		{"hideNotificationCounters", s._hideNotificationCounters.current()},
 		{"hideNotificationBadge", s._hideNotificationBadge.current()},
 		{"hideAllChatsFolder", s._hideAllChatsFolder.current()},
@@ -1186,6 +1488,15 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 			auto account = std::make_unique<GhostModeAccountSettings>();
 			value.get_to(*account);
 			s._ghostAccounts[std::stoull(key)] = std::move(account);
+		}
+	}
+
+	s._administratorFolders.clear();
+	if (j.contains("administratorFolders") && j["administratorFolders"].is_object()) {
+		for (auto &[key, value] : j["administratorFolders"].items()) {
+			if (value.is_number_integer()) {
+				s._administratorFolders[std::stoull(key)] = value.get<int>();
+			}
 		}
 	}
 
@@ -1257,6 +1568,45 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 	s._showGhostToggleInTray = j.value("showGhostToggleInTray", defaults._showGhostToggleInTray.current());
 	s._showStreamerToggleInTray = j.value("showStreamerToggleInTray", defaults._showStreamerToggleInTray.current());
 	s._monoFont = j.value("monoFont", defaults._monoFont.current());
+	s._articleTranslationProvider = j.value("articleTranslationProvider", defaults._articleTranslationProvider.current());
+	s._llmPresetModel9 = j.value("llmPresetModel9", defaults._llmPresetModel9.current());
+	s._llmPresetModel8 = j.value("llmPresetModel8", defaults._llmPresetModel8.current());
+	s._llmPresetModel7 = j.value("llmPresetModel7", defaults._llmPresetModel7.current());
+	s._llmPresetModel6 = j.value("llmPresetModel6", defaults._llmPresetModel6.current());
+	s._llmPresetModel5 = j.value("llmPresetModel5", defaults._llmPresetModel5.current());
+	s._llmPresetModel4 = j.value("llmPresetModel4", defaults._llmPresetModel4.current());
+	s._llmPresetModel3 = j.value("llmPresetModel3", defaults._llmPresetModel3.current());
+	s._llmPresetModel2 = j.value("llmPresetModel2", defaults._llmPresetModel2.current());
+	s._llmPresetModel1 = j.value("llmPresetModel1", defaults._llmPresetModel1.current());
+	s._llmPresetModel0 = j.value("llmPresetModel0", defaults._llmPresetModel0.current());
+	s._llmPresetKey9 = j.value("llmPresetKey9", defaults._llmPresetKey9.current());
+	s._llmPresetKey8 = j.value("llmPresetKey8", defaults._llmPresetKey8.current());
+	s._llmPresetKey7 = j.value("llmPresetKey7", defaults._llmPresetKey7.current());
+	s._llmPresetKey6 = j.value("llmPresetKey6", defaults._llmPresetKey6.current());
+	s._llmPresetKey5 = j.value("llmPresetKey5", defaults._llmPresetKey5.current());
+	s._llmPresetKey4 = j.value("llmPresetKey4", defaults._llmPresetKey4.current());
+	s._llmPresetKey3 = j.value("llmPresetKey3", defaults._llmPresetKey3.current());
+	s._llmPresetKey2 = j.value("llmPresetKey2", defaults._llmPresetKey2.current());
+	s._llmPresetKey1 = j.value("llmPresetKey1", defaults._llmPresetKey1.current());
+	s._llmTemperature = j.value("llmTemperature", defaults._llmTemperature.current());
+	s._llmContextSize = j.value("llmContextSize", defaults._llmContextSize.current());
+	s._llmUseContextInAutoTranslate = j.value("llmUseContextInAutoTranslate", defaults._llmUseContextInAutoTranslate.current());
+	s._llmUseContext = j.value("llmUseContext", defaults._llmUseContext.current());
+	s._llmUserPrompt = j.value("llmUserPrompt", defaults._llmUserPrompt.current());
+	s._llmSystemPrompt = j.value("llmSystemPrompt", defaults._llmSystemPrompt.current());
+	s._llmApiKey = j.value("llmApiKey", defaults._llmApiKey.current());
+	s._llmApiUrl = j.value("llmApiUrl", defaults._llmApiUrl.current());
+	s._llmProviderPreset = j.value("llmProviderPreset", defaults._llmProviderPreset.current());
+	s._enableSeparateArticleTranslator = j.value("enableSeparateArticleTranslator", defaults._enableSeparateArticleTranslator.current());
+	s._keepTranslatorPreferences = j.value("keepTranslatorPreferences", defaults._keepTranslatorPreferences.current());
+	s._googleTranslateExp = j.value("googleTranslateExp", defaults._googleTranslateExp.current());
+	s._deepLTranslateKey = j.value("deepLTranslateKey", defaults._deepLTranslateKey.current());
+	s._googleCloudTranslateKey = j.value("googleCloudTranslateKey", defaults._googleCloudTranslateKey.current());
+	s._preferredTranslateTargetLang = j.value("preferredTranslateTargetLang", defaults._preferredTranslateTargetLang.current());
+	s._translatorWithOriginalText = j.value("translatorWithOriginalText", defaults._translatorWithOriginalText.current());
+	s._translatorKeepMarkdown = j.value("translatorKeepMarkdown", defaults._translatorKeepMarkdown.current());
+	s._showInlineCopyInContextMenu = j.value("showInlineCopyInContextMenu", defaults._showInlineCopyInContextMenu.current());
+	s._showTranslateInContextMenu = j.value("showTranslateInContextMenu", defaults._showTranslateInContextMenu.current());
 	s._hideNotificationCounters = j.value("hideNotificationCounters", defaults._hideNotificationCounters.current());
 	s._hideNotificationBadge = j.value("hideNotificationBadge", defaults._hideNotificationBadge.current());
 	s._hideAllChatsFolder = j.value("hideAllChatsFolder", defaults._hideAllChatsFolder.current());

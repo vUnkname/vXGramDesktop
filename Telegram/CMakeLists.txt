@@ -161,6 +161,22 @@ set(ayugram_files
         ayu/ui/settings/settings_ayu.h
         ayu/ui/settings/settings_filters.cpp
         ayu/ui/settings/settings_filters.h
+        ayu/ui/settings/settings_folder.cpp
+        ayu/ui/settings/settings_folder.h
+        ayu/ui/settings/settings_translator.cpp
+        ayu/ui/settings/settings_translator.h
+        ayu/ui/settings/translator/translator_settings_utils.cpp
+        ayu/ui/settings/translator/translator_settings_utils.h
+        ayu/ui/boxes/llm_model_box.cpp
+        ayu/ui/boxes/llm_model_box.h
+        ayu/ui/boxes/text_input_box.cpp
+        ayu/ui/boxes/text_input_box.h
+        ayu/features/translator/translator_providers.cpp
+        ayu/features/translator/translator_providers.h
+        ayu/ui/settings/folder/administrator_preset_row.cpp
+        ayu/ui/settings/folder/administrator_preset_row.h
+        ayu/features/admin_folder/administrator_folder.cpp
+        ayu/features/admin_folder/administrator_folder.h
         ayu/ui/settings/settings_main.cpp
         ayu/ui/settings/settings_main.h
         ayu/ui/settings/settings_other.cpp
@@ -237,6 +253,28 @@ set(ayugram_files
         ayu/features/translator/ayu_translate_provider.h
         ayu/features/translator/html_parser.cpp
         ayu/features/translator/html_parser.h
+        ayu/features/translator/implementations/deepl.cpp
+        ayu/features/translator/implementations/deepl.h
+        ayu/features/translator/implementations/google_app.cpp
+        ayu/features/translator/implementations/google_app.h
+        ayu/features/translator/implementations/http.cpp
+        ayu/features/translator/implementations/http.h
+        ayu/features/translator/implementations/llm.cpp
+        ayu/features/translator/implementations/llm.h
+        ayu/features/translator/llm/llm_client.cpp
+        ayu/features/translator/llm/llm_client.h
+        ayu/features/translator/llm/llm_config.cpp
+        ayu/features/translator/llm/llm_config.h
+        ayu/features/translator/llm/llm_model_util.cpp
+        ayu/features/translator/llm/llm_model_util.h
+        ayu/features/translator/llm/llm_presets.cpp
+        ayu/features/translator/llm/llm_presets.h
+        ayu/features/translator/implementations/lingo.cpp
+        ayu/features/translator/implementations/lingo.h
+        ayu/features/translator/implementations/microsoft.cpp
+        ayu/features/translator/implementations/microsoft.h
+        ayu/features/translator/implementations/transmart.cpp
+        ayu/features/translator/implementations/transmart.h
         ayu/features/translator/implementations/google.cpp
         ayu/features/translator/implementations/google.h
         ayu/features/translator/implementations/yandex.cpp

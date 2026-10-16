@@ -1851,6 +1851,7 @@ void FillContextMenuItems(
 	}
 	if (request.overSelection
 		&& view
+		&& AyuUi::needToShowTranslate()
 		&& !Ui::SkipTranslate(list->getSelectedText().rich)) {
 		const auto owner = &view->history()->owner();
 		result->addAction(tr::lng_context_translate_selected(tr::now), [=] {
@@ -1947,6 +1948,7 @@ void FillContextMenuItems(
 					.append(item->originalText()))
 				: item->originalText();
 			if ((!item->translation() || !item->history()->translatedTo())
+				&& AyuUi::needToShowTranslate()
 				&& !translate.text.isEmpty()
 				&& !Ui::SkipTranslate(translate)) {
 				result->addAction(tr::lng_context_translate(tr::now), [=] {
@@ -2398,7 +2400,7 @@ void AddPollActions(
 		for (const auto &answer : poll->answers) {
 			text.append('\n').append(radio).append(answer.text);
 		}
-		if (!Ui::SkipTranslate(text)) {
+		if (AyuUi::needToShowTranslate() && !Ui::SkipTranslate(text)) {
 			menu->addAction(tr::lng_context_translate(tr::now), [=] {
 				controller->show(Box(
 					Ui::TranslateBox,

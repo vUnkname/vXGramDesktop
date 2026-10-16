@@ -6,6 +6,8 @@
 // Copyright @Radolyn, 2026
 #include "ayu/utils/inline_button_copy.h"
 
+#include "ayu/ayu_settings.h"
+#include "ayu/ui/context_menu/context_menu.h"
 #include "data/data_document.h"
 #include "data/data_session.h"
 #include "data/stickers/data_custom_emoji.h"
@@ -71,6 +73,10 @@ bool AddInlineButtonCopyAction(
 		const ClickHandlerPtr &link) {
 	const auto handler = dynamic_cast<ReplyMarkupClickHandler*>(link.get());
 	if (!handler) {
+		return false;
+	}
+	if (!AyuUi::needToShowItem(
+			AyuSettings::getInstance().showInlineCopyInContextMenu())) {
 		return false;
 	}
 	const auto button = handler->getUrlButton();

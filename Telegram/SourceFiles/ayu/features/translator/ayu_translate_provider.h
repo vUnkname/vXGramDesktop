@@ -19,6 +19,7 @@ namespace Ui {
 
 [[nodiscard]] std::unique_ptr<TranslateProvider> CreateAyuTranslateProvider(
 	not_null<Main::Session*> session,
-	TranslationProvider provider);
+	TranslationProvider provider,
+	bool automatic = false);
 
 } // namespace Ui

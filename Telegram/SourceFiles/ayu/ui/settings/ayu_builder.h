@@ -63,6 +63,8 @@ public:
 		Fn<void(int)> setter;
 		IconDescriptor icon;
 		QStringList keywords;
+		// When set, a vertical separator and a gear button are added on the right.
+		Fn<void()> gearClick;
 	};
 	void addChooseButton(ChooseButtonArgs &&args);
 
@@ -78,6 +80,7 @@ public:
 		Fn<void(int)> onFinalChanged;
 		Fn<QString(int)> formatLabel;
 		QStringList keywords;
+		rpl::producer<bool> shown;
 	};
 	void addSlider(SliderArgs &&args);
 

@@ -46,6 +46,8 @@ struct ParsedData
 	std::vector<TextWithEntities> texts;
 	QString fromLang;
 	QString toLang;
+	// Optional conversation context for LLM translators.
+	QString llmContext;
 };
 
 struct StartTranslationArgs
@@ -64,6 +66,7 @@ struct ParsedDataSingle
 	TextWithEntities text;
 	QString fromLang;
 	QString toLang;
+	QString llmContext;
 };
 
 struct MultiThreadArgs

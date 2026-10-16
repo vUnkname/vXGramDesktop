@@ -43,7 +43,7 @@ constexpr auto kRequestCountLimit = 20;
 
 TranslateTracker::TranslateTracker(not_null<History*> history)
 : _history(history)
-, _provider(Ui::CreateTranslateProvider(&_history->session()))
+, _provider(Ui::CreateTranslateProvider(&_history->session(), true))
 , _api(&_history->session().mtp())
 , _limit(kEnoughForRecognition) {
 	setup();
@@ -278,7 +278,7 @@ void TranslateTracker::stopAndRevert() {
 void TranslateTracker::resetProvider() {
 	cancelToRequest();
 	cancelSentRequest();
-	_provider = Ui::CreateTranslateProvider(&_history->session());
+	_provider = Ui::CreateTranslateProvider(&_history->session(), true);
 	invalidateTranslations();
 }
 

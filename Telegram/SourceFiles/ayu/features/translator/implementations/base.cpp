@@ -158,6 +158,7 @@ void MultiThreadTranslator::startTranslation(const StartTranslationArgs &args) {
 		std::vector<TextWithEntities> inputs;
 		QString from;
 		QString to;
+		QString context;
 		CallbackSuccess onSuccess;
 		CallbackFail onFail;
 
@@ -193,6 +194,7 @@ void MultiThreadTranslator::startTranslation(const StartTranslationArgs &args) {
 	state->inputs = texts;
 	state->from = fromLang;
 	state->to = toLang;
+	state->context = args.parsedData.llmContext;
 	state->onSuccess = args.onSuccess;
 	state->onFail = args.onFail;
 	state->total = static_cast<int>(texts.size());
@@ -249,6 +251,7 @@ void MultiThreadTranslator::startTranslation(const StartTranslationArgs &args) {
 		singleArgs.parsedData.text = state->inputs[i];
 		singleArgs.parsedData.fromLang = state->from;
 		singleArgs.parsedData.toLang = state->to;
+		singleArgs.parsedData.llmContext = state->context;
 		singleArgs.onSuccess = [state, attemptCompleted, i, finishSuccess](const TextWithEntities &translated) mutable
 		{
 			if (state->finished || *attemptCompleted) return;

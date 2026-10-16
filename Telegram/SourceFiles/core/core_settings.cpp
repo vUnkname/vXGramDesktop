@@ -1895,6 +1895,16 @@ LanguageId Settings::translateTo() const {
 	return DefaultSkipLanguages().front();
 }
 
+bool Settings::translateToFollowsApp() const {
+	return !_translateToRaw.current();
+}
+
+rpl::producer<bool> Settings::translateToFollowsAppValue() const {
+	return _translateToRaw.value() | rpl::map([](int raw) {
+		return !raw;
+	}) | rpl::distinct_until_changed();
+}
+
 rpl::producer<LanguageId> Settings::translateToValue() const {
 	return _translateToRaw.value() | rpl::map([=](int raw) {
 		return raw

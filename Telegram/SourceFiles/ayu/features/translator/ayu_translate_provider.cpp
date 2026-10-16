@@ -7,16 +7,65 @@
 #include "ayu/features/translator/ayu_translate_provider.h"
 
 #include "api/api_text_entities.h"
+#include "ayu/ayu_settings.h"
 #include "ayu/features/translator/ayu_translator.h"
+#include "ayu/features/translator/llm/llm_config.h"
 #include "base/weak_ptr.h"
 #include "data/data_msg_id.h"
 #include "data/data_peer.h"
 #include "data/data_session.h"
+#include "history/history.h"
+#include "history/history_block.h"
+#include "history/history_item.h"
+#include "history/view/history_view_element.h"
 #include "main/main_session.h"
 
 #include <memory>
 
 namespace {
+
+constexpr auto kOriginalSeparator = "\n\n--------\n\n";
+
+// Previous messages of the chat which precede the translated message.
+[[nodiscard]] QString BuildLlmContext(
+		not_null<Main::Session*> session,
+		const Ui::TranslateProviderRequest &request) {
+	const auto limit = Ayu::Translator::Llm::Config::ContextMessageLimit();
+	if (request.text.text.isEmpty() || (limit <= 0)) {
+		return {};
+	}
+	const auto history = session->data().historyLoaded(
+		PeerId(request.peerId));
+	if (!history) {
+		return {};
+	}
+	auto items = std::vector<not_null<HistoryItem*>>();
+	for (const auto &block : history->blocks) {
+		for (const auto &element : block->messages) {
+			items.push_back(element->data());
+		}
+	}
+	auto index = -1;
+	for (auto i = int(items.size()); i != 0;) {
+		--i;
+		if (items[i]->originalText().text == request.text.text) {
+			index = i;
+			break;
+		}
+	}
+	if (index <= 0) {
+		return {};
+	}
+	auto lines = QStringList();
+	for (auto i = index - 1; (i >= 0) && (lines.size() < limit); --i) {
+		const auto text = items[i]->originalText().text.trimmed();
+		if (text.isEmpty()) {
+			continue;
+		}
+		lines.push_front(items[i]->from()->name() + u": "_q + text);
+	}
+	return lines.join('\n');
+}
 
 class AyuTranslateProvider final
 	: public Ui::TranslateProvider
@@ -24,9 +73,11 @@ class AyuTranslateProvider final
 public:
 	AyuTranslateProvider(
 		not_null<Main::Session*> session,
-		TranslationProvider provider)
+		TranslationProvider provider,
+		bool automatic)
 	: _session(session)
-	, _provider(provider) {
+	, _provider(provider)
+	, _automatic(automatic) {
 		if (!Ayu::Translator::TranslateManager::currentInstance()) {
 			Ayu::Translator::TranslateManager::init();
 		}
@@ -81,21 +132,30 @@ public:
 			failAll();
 			return;
 		}
+		// "Show original text" (Always): auto-translated messages keep the
+		// original below the translation.
+		const auto keepOriginal = _automatic
+			&& (AyuSettings::getInstance().translatorWithOriginalText() == 2);
 		const auto doneFromResult = [=, session = _session](
 				const MTPmessages_TranslatedText &result) {
 			const auto &list = result.data().vresult().v;
 			for (auto i = 0; i != requests.size(); ++i) {
-				doneOne(
-					i,
-					(i < list.size())
-						? Ui::TranslateProviderResult{
-							.text = Api::ParseTextWithEntities(
-								session,
-								list[i]),
-						}
-						: Ui::TranslateProviderResult{
-							.error = Ui::TranslateProviderError::Unknown,
-						});
+				if (i >= list.size()) {
+					doneOne(i, Ui::TranslateProviderResult{
+						.error = Ui::TranslateProviderError::Unknown,
+					});
+					continue;
+				}
+				auto translated = Api::ParseTextWithEntities(session, list[i]);
+				if (keepOriginal && !requests[i].text.text.isEmpty()) {
+					auto combined = requests[i].text;
+					combined.append(QString::fromLatin1(kOriginalSeparator));
+					combined.append(std::move(translated));
+					translated = std::move(combined);
+				}
+				doneOne(i, Ui::TranslateProviderResult{
+					.text = std::move(translated),
+				});
 			}
 			doneAll();
 		};
@@ -146,6 +206,15 @@ public:
 						_session,
 						request.text.entities,
 						Api::ConvertOption::SkipLocal)));
+			}
+			if (_provider == TranslationProvider::LLM) {
+				const auto &settings = AyuSettings::getInstance();
+				if (settings.llmUseContext()
+					&& (!_automatic
+						|| settings.llmUseContextInAutoTranslate())) {
+					manager->setNextLlmContext(
+						BuildLlmContext(_session, requests.front()));
+				}
 			}
 			manager->request(
 				_session,
@@ -203,6 +272,7 @@ private:
 
 	const not_null<Main::Session*> _session;
 	const TranslationProvider _provider;
+	const bool _automatic;
 };
 
 } // namespace
@@ -211,8 +281,12 @@ namespace Ui {
 
 std::unique_ptr<TranslateProvider> CreateAyuTranslateProvider(
 		not_null<Main::Session*> session,
-		TranslationProvider provider) {
-	return std::make_unique<AyuTranslateProvider>(session, provider);
+		TranslationProvider provider,
+		bool automatic) {
+	return std::make_unique<AyuTranslateProvider>(
+		session,
+		provider,
+		automatic);
 }
 
 } // namespace Ui

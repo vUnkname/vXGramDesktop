@@ -124,3 +124,18 @@ ayuServiceTimeBadgeVerticalPadding: 2px;
 ayuServiceTimeBadgeGap: 8px;
 ayuServiceTimeBadgeTrailingInset: 3px;
 ayuServiceTimeBadgeLastLineWidthAdd: 9px;
+
+ayuSettingsGearAreaWidth: 56px;
+ayuSettingsGearButton: IconButton(defaultIconButton) {
+	width: 56px;
+	height: 40px;
+
+	icon: icon {{ "menu/settings", menuIconFg }};
+	iconOver: icon {{ "menu/settings", menuIconFgOver }};
+	iconPosition: point(-1px, -1px);
+
+	rippleAreaPosition: point(8px, 0px);
+	rippleAreaSize: 40px;
+	ripple: defaultRippleAnimationBgOver;
+}
+ayuSettingsGearSeparatorSkip: 8px;

@@ -30,7 +30,8 @@ void TranslateBox(
 [[nodiscard]] object_ptr<BoxContent> EditSkipTranslationLanguages();
 [[nodiscard]] object_ptr<BoxContent> ChooseTranslateToBox(
 	LanguageId bringUp,
-	Fn<void(LanguageId)> callback);
+	Fn<void(LanguageId)> callback,
+	bool persist = true);
 
 [[nodiscard]] LanguageId ChooseTranslateTo(not_null<History*> history);
 [[nodiscard]] LanguageId ChooseTranslateTo(LanguageId offeredFrom);

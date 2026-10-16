@@ -247,6 +247,10 @@ bool needToShowItem(ContextMenuVisibility state) {
 		|| (state == ContextMenuVisibility::VisibleWithModifier && base::IsExtendedContextMenuModifierPressed());
 }
 
+bool needToShowTranslate() {
+	return needToShowItem(AyuSettings::getInstance().showTranslateInContextMenu());
+}
+
 void AddAyuGramActions(PeerData *peerData,
 							   Data::Thread *thread,
 							   not_null<Window::SessionController*> sessionController,

@@ -18,8 +18,13 @@ class Session;
 
 namespace Ui {
 
+// `automatic` is true for the auto-translate of whole chats (as opposed to
+// a manual translation of one message). `article` is true for messages
+// with an Instant View page (uses the separate article provider if enabled).
 [[nodiscard]] std::unique_ptr<TranslateProvider> CreateTranslateProvider(
-	not_null<Main::Session*> session);
+	not_null<Main::Session*> session,
+	bool automatic = false,
+	bool article = false);
 
 [[nodiscard]] TranslateProviderRequest PrepareTranslateProviderRequest(
 	not_null<TranslateProvider*> provider,

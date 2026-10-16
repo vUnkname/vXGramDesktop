@@ -6,6 +6,9 @@ For license and copyright information please follow this link:
 https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 */
 #include "boxes/translate_box.h"
+
+// AyuGram includes
+#include "ayu/ayu_settings.h"
 #include "boxes/translate_box_content.h"
 #include "lang/translate_provider.h"
 
@@ -413,7 +416,8 @@ void SetupRichArticleBody(
 		}
 		box->uiShow()->showBox(ChooseTranslateToBox(
 			state->to.current(),
-			crl::guard(box, [=](LanguageId id) { state->to = id; })));
+			crl::guard(box, [=](LanguageId id) { state->to = id; }),
+			AyuSettings::getInstance().keepTranslatorPreferences()));
 	});
 	return true;
 }
@@ -427,16 +431,21 @@ void TranslateBox(
 		TextWithEntities text,
 		bool hasCopyRestriction) {
 	struct State {
-		State(not_null<Main::Session*> session)
-		: provider(CreateTranslateProvider(session)) {
+		State(not_null<Main::Session*> session, bool article)
+		: provider(CreateTranslateProvider(session, false, article)) {
 		}
 
 		std::unique_ptr<TranslateProvider> provider;
 		rpl::variable<LanguageId> to;
 	};
-	const auto state = box->lifetime().make_state<State>(&peer->session());
+	const auto articleItem = IsServerMsgId(msgId)
+		? peer->owner().message(peer->id, msgId)
+		: nullptr;
+	const auto state = box->lifetime().make_state<State>(
+		&peer->session(),
+		articleItem && articleItem->richPage());
 	if (IsServerMsgId(msgId) && state->provider->supportsMessageId()) {
-		if (const auto item = peer->owner().message(peer->id, msgId)) {
+		if (const auto item = articleItem) {
 			if (const auto page = item->richPage()) {
 				if (TranslateRichBox(
 						box,
@@ -466,7 +475,8 @@ void TranslateBox(
 		.chooseTo = [=] {
 			box->uiShow()->showBox(ChooseTranslateToBox(
 				state->to.current(),
-				crl::guard(box, [=](LanguageId id) { state->to = id; })));
+				crl::guard(box, [=](LanguageId id) { state->to = id; }),
+				AyuSettings::getInstance().keepTranslatorPreferences()));
 		},
 		.request = [=](
 				LanguageId to,
@@ -556,13 +566,27 @@ object_ptr<BoxContent> EditSkipTranslationLanguages() {
 
 object_ptr<BoxContent> ChooseTranslateToBox(
 		LanguageId bringUp,
-		Fn<void(LanguageId)> callback) {
+		Fn<void(LanguageId)> callback,
+		bool persist) {
 	const auto &settings = Core::App().settings();
 	auto selected = std::vector<LanguageId>{
 		settings.translateTo(),
 	};
 	for (const auto &id : settings.skipTranslationLanguages()) {
 		if (id != selected.front()) {
+			selected.push_back(id);
+		}
+	}
+	// AyuGram: preferred target languages are listed first.
+	const auto preferred = AyuSettings::getInstance()
+		.preferredTranslateTargetLang();
+	for (const auto &code : preferred.split(',', Qt::SkipEmptyParts)) {
+		const auto trimmed = code.trimmed();
+		if (trimmed.isEmpty()) {
+			continue;
+		}
+		const auto id = LanguageId::FromName(trimmed);
+		if (id && !ranges::contains(selected, id)) {
 			selected.push_back(id);
 		}
 	}
@@ -574,8 +598,10 @@ object_ptr<BoxContent> ChooseTranslateToBox(
 		Expects(!ids.empty());
 
 		const auto id = ids.front();
-		Core::App().settings().setTranslateTo(id);
-		Core::App().saveSettingsDelayed();
+		if (persist) {
+			Core::App().settings().setTranslateTo(id);
+			Core::App().saveSettingsDelayed();
+		}
 		callback(id);
 	}, selected, false, nullptr);
 }
