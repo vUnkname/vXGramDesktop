@@ -209,7 +209,11 @@ jobs:
             echo "TDESKTOP_BUILD_API=-D TDESKTOP_API_TEST=ON" >> $GITHUB_ENV
           fi
 
+      # Cap MSBuild jobs: full --parallel on windows-latest often hits MSVC C1060
+      # (compiler out of heap space) on large TUs / generated qrc_* sources.
       - name: Telegram Desktop build.
+        env:
+          _CL_: /Zm512
         run: |
           cd %TBUILD%\%REPO_NAME%\Telegram
 
@@ -221,7 +225,7 @@ jobs:
           -D DESKTOP_APP_DISABLE_AUTOUPDATE=ON ^
           -D DESKTOP_APP_DISABLE_CRASH_REPORTS=ON
 
-          cmake --build ..\out --config %BUILD_TYPE% --parallel
+          cmake --build ..\out --config %BUILD_TYPE% --parallel 2
 
       - name: Collect portable package.
         run: |
