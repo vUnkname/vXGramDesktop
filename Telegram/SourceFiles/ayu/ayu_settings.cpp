@@ -507,6 +507,7 @@ void AyuSettings::validate() {
 	validateEnum(_showMessageDetailsInContextMenu, defaults._showMessageDetailsInContextMenu);
 	validateEnum(_showRepeatMessageInContextMenu, defaults._showRepeatMessageInContextMenu);
 	validateEnum(_showAddFilterInContextMenu, defaults._showAddFilterInContextMenu);
+	validateEnum(_showViewAsJsonInContextMenu, defaults._showViewAsJsonInContextMenu);
 
 	validateEnum(_translationProvider, defaults._translationProvider, 3);
 	if ((_translationProvider.current() == TranslationProvider::Native)
@@ -780,6 +781,12 @@ void AyuSettings::setShowRepeatMessageInContextMenu(ContextMenuVisibility val) {
 void AyuSettings::setShowAddFilterInContextMenu(ContextMenuVisibility val) {
 	if (_showAddFilterInContextMenu.current() == val) return;
 	_showAddFilterInContextMenu = val;
+	save();
+}
+
+void AyuSettings::setShowViewAsJsonInContextMenu(ContextMenuVisibility val) {
+	if (_showViewAsJsonInContextMenu.current() == val) return;
+	_showViewAsJsonInContextMenu = val;
 	save();
 }
 
@@ -1120,6 +1127,7 @@ void to_json(nlohmann::json &j, const AyuSettings &s) {
 		{"showMessageDetailsInContextMenu", s._showMessageDetailsInContextMenu.current()},
 		{"showRepeatMessageInContextMenu", s._showRepeatMessageInContextMenu.current()},
 		{"showAddFilterInContextMenu", s._showAddFilterInContextMenu.current()},
+		{"showViewAsJsonInContextMenu", s._showViewAsJsonInContextMenu.current()},
 		{"showAttachButtonInMessageField", s._showAttachButtonInMessageField.current()},
 		{"showCommandsButtonInMessageField", s._showCommandsButtonInMessageField.current()},
 		{"showEmojiButtonInMessageField", s._showEmojiButtonInMessageField.current()},
@@ -1224,6 +1232,7 @@ void from_json(const nlohmann::json &j, AyuSettings &s) {
 	s._showMessageDetailsInContextMenu = j.value("showMessageDetailsInContextMenu", defaults._showMessageDetailsInContextMenu.current());
 	s._showRepeatMessageInContextMenu = j.value("showRepeatMessageInContextMenu", defaults._showRepeatMessageInContextMenu.current());
 	s._showAddFilterInContextMenu = j.value("showAddFilterInContextMenu", defaults._showAddFilterInContextMenu.current());
+	s._showViewAsJsonInContextMenu = j.value("showViewAsJsonInContextMenu", defaults._showViewAsJsonInContextMenu.current());
 	s._showAttachButtonInMessageField = j.value("showAttachButtonInMessageField", defaults._showAttachButtonInMessageField.current());
 	s._showCommandsButtonInMessageField = j.value("showCommandsButtonInMessageField", defaults._showCommandsButtonInMessageField.current());
 	s._showEmojiButtonInMessageField = j.value("showEmojiButtonInMessageField", defaults._showEmojiButtonInMessageField.current());

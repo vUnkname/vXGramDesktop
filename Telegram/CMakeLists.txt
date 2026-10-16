@@ -122,6 +122,8 @@ set(ayugram_files
         ayu/ayu_infra.h
         ayu/utils/ayu_mapper.cpp
         ayu/utils/ayu_mapper.h
+        ayu/utils/inline_button_copy.cpp
+        ayu/utils/inline_button_copy.h
         ayu/utils/qt_key_modifiers_extended.h
         ayu/utils/telegram_helpers.cpp
         ayu/utils/telegram_helpers.h

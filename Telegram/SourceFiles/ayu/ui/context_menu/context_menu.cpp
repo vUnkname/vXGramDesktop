@@ -570,6 +570,28 @@ void AddUserMessagesAction(not_null<Ui::PopupMenu*> menu, HistoryItem *item) {
 	}
 }
 
+void AddViewAsJsonAction(not_null<Ui::PopupMenu*> menu,
+						 not_null<Window::SessionController*> controller,
+						 HistoryItem *item) {
+	const auto &settings = AyuSettings::getInstance();
+	if (!needToShowItem(settings.showViewAsJsonInContextMenu())) {
+		return;
+	}
+
+	if (!item || item->id <= 0) {
+		return;
+	}
+
+	const auto itemId = item->fullId();
+	menu->addAction(
+		tr::lng_context_view_as_json(tr::now),
+		[=]
+		{
+			HistoryView::ViewAsJSON(controller, itemId);
+		},
+		&st::menuIconViewJson);
+}
+
 void AddMessageDetailsAction(not_null<Ui::PopupMenu*> menu, HistoryItem *item) {
 	const auto &settings = AyuSettings::getInstance();
 	if (!needToShowItem(settings.showMessageDetailsInContextMenu())) {

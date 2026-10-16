@@ -308,6 +308,7 @@ public:
 	[[nodiscard]] ContextMenuVisibility showMessageDetailsInContextMenu() const { return _showMessageDetailsInContextMenu.current(); }
 	[[nodiscard]] ContextMenuVisibility showRepeatMessageInContextMenu() const { return _showRepeatMessageInContextMenu.current(); }
 	[[nodiscard]] ContextMenuVisibility showAddFilterInContextMenu() const { return _showAddFilterInContextMenu.current(); }
+	[[nodiscard]] ContextMenuVisibility showViewAsJsonInContextMenu() const { return _showViewAsJsonInContextMenu.current(); }
 	[[nodiscard]] bool showAttachButtonInMessageField() const { return _showAttachButtonInMessageField.current(); }
 	[[nodiscard]] bool showCommandsButtonInMessageField() const { return _showCommandsButtonInMessageField.current(); }
 	[[nodiscard]] bool showEmojiButtonInMessageField() const { return _showEmojiButtonInMessageField.current(); }
@@ -395,6 +396,7 @@ public:
 	void setShowMessageDetailsInContextMenu(ContextMenuVisibility val);
 	void setShowRepeatMessageInContextMenu(ContextMenuVisibility val);
 	void setShowAddFilterInContextMenu(ContextMenuVisibility val);
+	void setShowViewAsJsonInContextMenu(ContextMenuVisibility val);
 	void setShowAttachButtonInMessageField(bool val);
 	void setShowCommandsButtonInMessageField(bool val);
 	void setShowEmojiButtonInMessageField(bool val);
@@ -525,6 +527,8 @@ public:
 	[[nodiscard]] rpl::producer<ContextMenuVisibility> showRepeatMessageInContextMenuChanges() const { return _showRepeatMessageInContextMenu.changes(); }
 	[[nodiscard]] rpl::producer<ContextMenuVisibility> showAddFilterInContextMenuValue() const { return _showAddFilterInContextMenu.value(); }
 	[[nodiscard]] rpl::producer<ContextMenuVisibility> showAddFilterInContextMenuChanges() const { return _showAddFilterInContextMenu.changes(); }
+	[[nodiscard]] rpl::producer<ContextMenuVisibility> showViewAsJsonInContextMenuValue() const { return _showViewAsJsonInContextMenu.value(); }
+	[[nodiscard]] rpl::producer<ContextMenuVisibility> showViewAsJsonInContextMenuChanges() const { return _showViewAsJsonInContextMenu.changes(); }
 	[[nodiscard]] rpl::producer<bool> showAttachButtonInMessageFieldValue() const { return _showAttachButtonInMessageField.value(); }
 	[[nodiscard]] rpl::producer<bool> showAttachButtonInMessageFieldChanges() const { return _showAttachButtonInMessageField.changes(); }
 	[[nodiscard]] rpl::producer<bool> showCommandsButtonInMessageFieldValue() const { return _showCommandsButtonInMessageField.value(); }
@@ -665,6 +669,7 @@ private:
 	rpl::variable<ContextMenuVisibility> _showMessageDetailsInContextMenu = ContextMenuVisibility::VisibleWithModifier;
 	rpl::variable<ContextMenuVisibility> _showRepeatMessageInContextMenu = ContextMenuVisibility::Hidden;
 	rpl::variable<ContextMenuVisibility> _showAddFilterInContextMenu = ContextMenuVisibility::Visible;
+	rpl::variable<ContextMenuVisibility> _showViewAsJsonInContextMenu = ContextMenuVisibility::Visible;
 	rpl::variable<bool> _showAttachButtonInMessageField = true;
 	rpl::variable<bool> _showCommandsButtonInMessageField = true;
 	rpl::variable<bool> _showEmojiButtonInMessageField = true;

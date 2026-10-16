@@ -5408,6 +5408,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "lng_toast_sent_rate_transcription" = "Thank you for your feedback!";
 
 "lng_context_copy_link" = "Copy Link";
+"lng_context_view_as_json" = "View As JSON";
 "lng_context_copy_message_link" = "Copy Message Link";
 "lng_context_copy_post_link" = "Copy Post Link";
 "lng_context_copy_topic_link" = "Copy Topic Link";
@@ -9167,6 +9168,13 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 "ayu_ContextHideMessage" = "Hide";
 "ayu_SearchByIDResults" = "Found by ID";
 "ayu_ContextCopyCallbackData" = "Copy Callback Data";
+"ayu_CopyMenu" = "Copy";
+"ayu_CopyCallbackData" = "Callback Data";
+"ayu_CopyButtonText" = "Button Text";
+"ayu_CopyButtonLink" = "Link";
+"ayu_CopyEmoji" = "Emoji";
+"ayu_CopyEmojiId" = "Emoji ID";
+"ayu_CopyEmojiMarkdown" = "Emoji Markdown";
 "ayu_RepeatMessage" = "Repeat Message";
 "ayu_RegisterURLScheme" = "Register URL Scheme";
 "ayu_PluginVersion" = "Version";

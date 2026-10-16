@@ -140,6 +140,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ayu/ayu_settings.h"
 #include "ayu/features/filters/filters_cache_controller.h"
 #include "ayu/ui/context_menu/context_menu.h"
+#include "ayu/utils/inline_button_copy.h"
 #include "ayu/ui/settings/filters/edit_filter.h"
 #include "ayu/utils/telegram_helpers.h"
 #include "data/data_document_media.h"
@@ -3588,6 +3589,9 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 				}, &st::menuIconBlock);
 			}
 		}
+		if (item && isUponSelected != 2 && isUponSelected != -2) {
+			AyuUi::AddViewAsJsonAction(_menu, controller, item);
+		}
 	} else { // maybe cursor on some text history item?
 		const auto albumPartItem = _dragStateItem;
 		const auto item = [&]() -> HistoryItem* {
@@ -3785,12 +3789,14 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 			}
 		}
 		if (!actionText.isEmpty()) {
-			_menu->addAction(
-				actionText,
-				[text = link->copyToClipboardText()] {
-					QGuiApplication::clipboard()->setText(text);
-				},
-				&st::menuIconCopy);
+			if (!AyuInlineCopy::AddInlineButtonCopyAction(_menu, link)) {
+				_menu->addAction(
+					actionText,
+					[text = link->copyToClipboardText()] {
+						QGuiApplication::clipboard()->setText(text);
+					},
+					&st::menuIconCopy);
+			}
 		} else if (item
 			&& item->hasDirectLink()
 			&& isUponSelected != 2
@@ -3909,6 +3915,9 @@ void HistoryInner::showContextMenu(QContextMenuEvent *e, bool showFromTouch) {
 			}
 		} else if (Element::Moused()) {
 			addSelectMessageAction(Element::Moused()->data());
+		}
+		if (item && isUponSelected != 2 && isUponSelected != -2) {
+			AyuUi::AddViewAsJsonAction(_menu, controller, item);
 		}
 	}
 

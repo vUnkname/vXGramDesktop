@@ -498,15 +498,23 @@ public:
 
 	void onClick(ClickContext context) const override;
 
+	[[nodiscard]] not_null<Data::Session*> owner() const {
+		return _owner;
+	}
+
+	// Returns the full text of the corresponding button.
+	QString buttonText() const;
+
+	// Returns the custom (premium / sticker) emoji document id used as
+	// the button icon, or 0 if the button has none.
+	[[nodiscard]] DocumentId customEmojiId() const;
+
 private:
 	const not_null<Data::Session*> _owner;
 	FullMsgId _itemId;
 	int _row = 0;
 	int _column = 0;
 	bool _fullDisplayed = true;
-
-	// Returns the full text of the corresponding button.
-	QString buttonText() const;
 
 };
 

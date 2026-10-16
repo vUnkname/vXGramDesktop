@@ -353,6 +353,15 @@ void BuildContextMenuElements(SectionBuilder &builder, AyuSectionBuilder &ayu) {
 		.setter = [](int i) { AyuSettings::getInstance().setShowRepeatMessageInContextMenu(static_cast<ContextMenuVisibility>(i)); },
 		.icon = { &st::ayuRepeatMenuIcon },
 	});
+	ayu.addChooseButton({
+		.id = u"ayu/showViewAsJsonInContextMenu"_q,
+		.title = tr::lng_context_view_as_json(),
+		.boxTitle = tr::ayu_SettingsContextMenuTitle(),
+		.initialSelection = static_cast<int>(settings->showViewAsJsonInContextMenu()),
+		.options = options,
+		.setter = [](int i) { AyuSettings::getInstance().setShowViewAsJsonInContextMenu(static_cast<ContextMenuVisibility>(i)); },
+		.icon = { &st::menuIconViewJson },
+	});
 	if (settings->filtersEnabled()) {
 		ayu.addChooseButton({
 			.id = u"ayu/showAddFilterInContextMenu"_q,

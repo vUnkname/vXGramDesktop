@@ -804,6 +804,13 @@ QString ReplyMarkupClickHandler::buttonText() const {
 	return QString();
 }
 
+DocumentId ReplyMarkupClickHandler::customEmojiId() const {
+	if (const auto button = getButton()) {
+		return button->visual.iconId;
+	}
+	return DocumentId();
+}
+
 QString ReplyMarkupClickHandler::tooltip() const {
 	if (const auto button = getButton()) {
 		if (button->type == HistoryMessageMarkupButton::Type::CopyText) {

@@ -112,6 +112,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "media/audio/media_audio.h"
 #include "media/player/media_player_instance.h"
 #include "spellcheck/spellcheck_types.h"
+#include "iv/iv_instance.h"
 #include "apiwrap.h"
 #include "styles/style_chat.h"
 #include "styles/style_chat_helpers.h"
@@ -125,6 +126,7 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "ayu/ayu_settings.h"
 #include "ayu/features/forward/ayu_forward.h"
 #include "ayu/ui/context_menu/context_menu.h"
+#include "ayu/utils/inline_button_copy.h"
 
 
 namespace HistoryView {
@@ -1438,6 +1440,10 @@ void AddMessageActions(
 	}
 	AddRescheduleAction(menu, request, list);
 
+	if (request.item && request.selectedItems.empty()) {
+		AyuUi::AddViewAsJsonAction(menu, list->controller(), request.item);
+	}
+
 	if (request.item) {
 		AyuUi::AddReadUntilAction(menu, request.item);
 		AyuUi::AddBurnAction(menu, request.item);
@@ -1448,6 +1454,9 @@ void AddCopyLinkAction(
 		not_null<Ui::PopupMenu*> menu,
 		const ClickHandlerPtr &link) {
 	if (!link) {
+		return;
+	}
+	if (AyuInlineCopy::AddInlineButtonCopyAction(menu, link)) {
 		return;
 	}
 	const auto action = link->copyToClipboardContextItemText();
@@ -2099,6 +2108,31 @@ void CopyPostLink(
 	} else {
 		show->showToast(tr::lng_context_about_private_link(tr::now));
 	}
+}
+
+void ViewAsJSON(
+		not_null<Window::SessionController*> controller,
+		FullMsgId itemId) {
+	ViewAsJSON(controller->uiShow(), itemId);
+}
+
+void ViewAsJSON(
+		std::shared_ptr<Main::SessionShow> show,
+		FullMsgId itemId) {
+	const auto item = show->session().data().message(itemId);
+	if (!item) {
+		return;
+	}
+	item->history()->session().api().exportMessageAsBase64(
+		item,
+		crl::guard(show, [=](const QString &base64) {
+			Core::App().iv().showTLViewer(
+				MTP::details::kCurrentLayer,
+				base64);
+		}),
+		crl::guard(show, [=] {
+			show->showToast(u"error"_q);
+		}));
 }
 
 void CopyStoryLink(
